@@ -1,0 +1,29 @@
+## courtesy https://serversforhackers.com/c/redirect-www-non-www
+
+server {
+    server_name foo.com www.foo.com;
+}
+
+########
+
+server {
+    listen 80;
+    listen 443 ssl;
+
+    include ssl.conf; # SSL config options
+
+    server_name www.foo.com;
+    return 301 $scheme://foo.com$requests_uri;
+}
+
+server {
+    listen 80 default_server;
+    listen 443 ssl;
+
+    include ssl.conf; # SSL config options
+
+    server_name foo.com;
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
